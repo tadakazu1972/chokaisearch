@@ -68,7 +68,7 @@
 			-webkit-transform: translate(-50%, 0%);
 			-ms-transform: translate(-50%, 0%);*/
 			width: 300px;
-			height: 280px;
+			height: 300px;
 			background: #ffe;
 			-webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
 			-moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
@@ -638,9 +638,9 @@
 					if (result[0].番地==="すべて" && result[0].備考==="すべて"){
 						info[1] = "すべて";
 					} else {
-						info[1]	= result[0].番地+" "+result[0].備考;
+						info[1]	= result[0].番地;
 					}
-					info2[0] = new infoData(result[0].町名, result[0].丁目, result[0].番地, result[0].備考, result[0].普通ごみ, result[0].普通ごみ_午前, result[0].普通ごみ_午後, result[0].資源ごみ, result[0].資源ごみ_午前, result[0].資源ごみ_午後, result[0].容器包装プラスチック, result[0].容器包装プラスチック_午前, result[0].容器包装プラスチック_午後, result[0].古紙衣類, result[0].古紙衣類_午前, result[0].古紙衣類_午後, result[0].古紙衣類_コミュニティ回収実施地域, result[0].ペットボトル_コミュニティ回収実施地域)
+					info2[0] = new infoData(result[0].町名, result[0].丁目, result[0].番地, result[0].備考, result[0].該当地域名１, result[0].該当地域名２, result[0].該当地域名３, result[0].該当地域会館名１, result[0].該当地域会館名２, result[0].該当地域会館名３, result[0].該当地域会館住所１, result[0].該当地域会館住所２, result[0].該当地域会館住所３, result[0].該当地域電話番号１, result[0].該当地域電話番号２, result[0].該当地域電話番号３, result[0].その他１, result[0].ペットボトル_コミュニティ回収実施地域)
 					//infowindow2ポインターイベント復活
 					d3.selectAll(".infowindow2").style("pointer-events", "auto");
 							//透明度100%
@@ -665,72 +665,68 @@
 							if (info2[0].banchi === "すべて" && info2[0].gaiku === "すべて"){
 								banchi_and_gaiku = 'すべて';
 							} else {
-								banchi_and_gaiku = info2[0].banchi + " " + info2[0].gaiku;
+								banchi_and_gaiku = info2[0].banchi;
 							}
 							tooltip2[1].style("font-size", fontSize)
 										.style("font-weight", "bold")
 										.style("left", (centerX)+"px")
 										.style("top", "256px")
 										.text(banchi_and_gaiku);
-							//普通ごみ
+							//地域名
 							var normal_str = "";
-							if (info2[0].normalQ != ""){
-								normal_str = info2[0].normalQ + "（要問合せ）";
-							} else if (info2[0].normalAM != ""){
-								normal_str = info2[0].normalAM + "（午前）";
-							} else if (info2[0].normalPM != ""){
-								normal_str = info2[0].normalPM + "（午後）";
-							}
+							var $normal1 = info2[0].normalQ  != "―" ? '１：'+info2[0].normalQ  : '';
+							var $normal2 = info2[0].normalAM != "―" ? '２：'+info2[0].normalAM : '';
+							var $normal3 = info2[0].normalPM != "―" ? '３：'+info2[0].normalPM : '';
+							normal_str =  $normal1 + $normal2 + $normal3; 
 							tooltip2[2].style("font-size", fontSize)
 										.style("left", (centerX)+"px")
 										.style("top", "288px")
-										.text("普通ごみ：" + normal_str)
-							//資源ごみ
+										.text("地域名：" + normal_str)
+							//地域会館
 							var res_str = "";
 							if (info2[0].resQ != ""){
-								res_str = info2[0].resQ + "（要問合せ）";
+								res_str = info2[0].resQ;
 							} else if (info2[0].resAM != ""){
-								res_str = info2[0].resAM + "（午前）";
+								res_str = info2[0].resAM;
 							} else if (info2[0].resPM != ""){
-								res_str = info2[0].resPM + "（午後）";
+								res_str = info2[0].resPM;
 							}
 							tooltip2[3].style("font-size", fontSize)
 										.style("left", (centerX)+"px")
 										.style("top", "320px")
-										.text("資源ごみ：" + res_str)
-							//容包プラ
+										.text("地域会館：" + res_str)
+							//会館住所
 							var pla_str = "";
 							if (info2[0].plaQ != ""){
-								pla_str = info2[0].plaQ + "（要問合せ）";
+								pla_str = info2[0].plaQ;
 							} else if (info2[0].plaAM != ""){
-								pla_str = info2[0].plaAM + "（午前）";
+								pla_str = info2[0].plaAM;
 							} else if (info2[0].plaPM != ""){
-								pla_str = info2[0].plaPM + "（午後）";
+								pla_str = info2[0].plaPM;
 							}
 							tooltip2[4].style("font-size", fontSize)
 										.style("left", (centerX)+"px")
 										.style("top", "352px")
-										.text("容包プラ：" + pla_str)
-							//古紙衣類
+										.text("会館住所：" + pla_str)
+							//会館連絡先
 							var paper_str = "";
 							if (info2[0].paperQ != ""){
-								paper_str = info2[0].paperQ + "（要問合せ）";
+								paper_str = info2[0].paperQ;
 							} else 	if (info2[0].paperAM != ""){
-								paper_str = info2[0].paperAM + "（午前）";
+								paper_str = info2[0].paperAM;
 							} else if (info2[0].paperPM != ""){
-								paper_str = info2[0].paperPM + "（午後）";
+								paper_str = info2[0].paperPM;
 							} else if (info2[0].paperCOM != ""){
-								paper_str = "ｺﾐｭﾆﾃｨ回収 " + info2[0].paperCOM;
+								paper_str = info2[0].paperCOM;
 							}
 							tooltip2[5].style("font-size", fontSize)
 										.style("left", (centerX)+"px")
 										.style("top", "384px")
-										.text("古紙衣類：" + paper_str)
-							//ペットボトル　コミュニティ回収
-							//データが存在する場合のみ、表示するため他と異なりpet_strに"ペットボトル："を含んでいることに注意
+										.text("会館連絡先：" + paper_str)
+							//お知らせ
 							var pet_str = "";
 							if (info2[0].petCOM != ""){
-								pet_str = "ペットボトル：ｺﾐｭﾆﾃｨ回収 " + info2[0].petCOM;
+								pet_str = "お知らせ：" + info2[0].paperCOM;
 							}
 							tooltip2[6].style("font-size", fontSize)
 										   .style("left", (centerX)+"px")
@@ -741,7 +737,7 @@
 										.style("font-size", fontSize)
 										.style("font-weight", "bold")
 										.style("left", (centerX+100)+"px")
-										.style("top", "450px")
+										.style("top", "500px")
 										.text("閉じる")
 										.on('click', function(){
 											d3.selectAll(".infowindow").style("opacity", "0").style("pointer-events", "none");
@@ -782,15 +778,15 @@
 						info[i+1] = "▶";
 					} else {
 						var _banchi = result[i].番地 === "" ? "▶" : result[i].番地;
-						var _str = result[i].備考 === "" ? "" : result[i].備考;
-						info[i+1]	= _banchi+" "+_str;
+						//var _str = result[i].備考 === "" ? "" : result[i].備考;
+						info[i+1]	= _banchi;
 						//文字列最大値を記録し、infowindowのwidthを調整する
 						var str_length = info[i+1].length;
 						//console.log(str_length)
 						max_str_length = max_str_length < str_length ? str_length : max_str_length;
 						//console.log(max_str_length)
 					}
-					info2[i] = new infoData(result[i].町名, result[i].丁目, result[i].番地, result[i].備考, result[i].普通ごみ, result[i].普通ごみ_午前, result[i].普通ごみ_午後, result[i].資源ごみ, result[i].資源ごみ_午前, result[i].資源ごみ_午後, result[i].容器包装プラスチック, result[i].容器包装プラスチック_午前, result[i].容器包装プラスチック_午後, result[i].古紙衣類, result[i].古紙衣類_午前, result[i].古紙衣類_午後, result[i].古紙衣類_コミュニティ回収実施地域, result[i].ペットボトル_コミュニティ回収実施地域)
+					info2[i] = new infoData(result[i].町名, result[i].丁目, result[i].番地, result[i].備考, result[i].該当地域名１, result[i].該当地域名２, result[i].該当地域名３, result[i].該当地域会館名１, result[i].該当地域会館名２, result[i].該当地域会館名３, result[i].該当地域会館住所１, result[i].該当地域会館住所２, result[i].該当地域会館住所３, result[i].該当地域電話番号１, result[i].該当地域電話番号２, result[i].該当地域電話番号３, result[i].その他１, result[i].ペットボトル_コミュニティ回収実施地域)
 					//tooltip　描画
 					tooltip[i+1].style("font-size", fontSize)
 				        .style("left", (posX)+"px")
@@ -827,72 +823,57 @@
 							if (info2[index].banchi === "すべて" && info2[index].gaiku === "すべて"){
 								banchi_and_gaiku = 'すべて';
 							} else {
-								banchi_and_gaiku = info2[index].banchi + " " + info2[index].gaiku;
+								banchi_and_gaiku = info2[index].banchi;
 							}
 							tooltip2[1].style("font-size", fontSize)
 										.style("font-weight", "bold")
 										.style("left", (centerX)+"px")
 										.style("top", "256px")
 										.text(banchi_and_gaiku);
-							//普通ごみ
+							//地域名
 							var normal_str = "";
-							if (info2[index].normalQ != ""){
-								normal_str = info2[index].normalQ + "（要問合せ）";
-							} else if (info2[index].normalAM != ""){
-								normal_str = info2[index].normalAM + "（午前）";
-							} else if (info2[index].normalPM != ""){
-								normal_str = info2[index].normalPM + "（午後）";
-							}
+							var $normal1 = info2[index].normalQ  != "―" ? '１：'+info2[index].normalQ  : '';
+							var $normal2 = info2[index].normalAM != "―" ? '２：'+info2[index].normalAM : '';
+							var $normal3 = info2[index].normalPM != "―" ? '３：'+info2[index].normalPM : '';
+							normal_str =  $normal1 + $normal2 + $normal3; 
 							tooltip2[2].style("font-size", fontSize)
 										.style("left", (centerX)+"px")
 										.style("top", "288px")
-										.text("普通ごみ：" + normal_str)
-							//資源ごみ
+										.text("地域名：" + normal_str)
+							//会館名
 							var res_str = "";
-							if (info2[index].resQ != ""){
-								res_str = info2[index].resQ + "（要問合せ）";
-							} else if (info2[index].resAM != ""){
-								res_str = info2[index].resAM + "（午前）";
-							} else if (info2[index].resPM != ""){
-								res_str = info2[index].resPM + "（午後）";
-							}
+							var $res1 = info2[index].resQ  != "―" ? '１：'+info2[index].resQ  : '';
+							var $res2 = info2[index].resAM != "―" ? '２：'+info2[index].resAM : '';
+							var $res3 = info2[index].resPM != "―" ? '３：'+info2[index].resPM : '';
+							res_str =  $res1 + $res2 + $res3; 
 							tooltip2[3].style("font-size", fontSize)
 										.style("left", (centerX)+"px")
 										.style("top", "320px")
-										.text("資源ごみ：" + res_str)
-							//容包プラ
+										.text("会館名：" + res_str)
+							//会館住所
 							var pla_str = "";
-							if (info2[index].plaQ != ""){
-								pla_str = info2[index].plaQ + "（要問合せ）";
-							} else if (info2[index].plaAM != ""){
-								pla_str = info2[index].plaAM + "（午前）";
-							} else if (info2[index].plaPM != ""){
-								pla_str = info2[index].plaPM + "（午後）";
-							}
+							var $pla1 = info2[index].plaQ  != "―" ? '１：'+info2[index].plaQ  : '';
+							var $pla2 = info2[index].plaAM != "―" ? '２：'+info2[index].plaAM : '';
+							var $pla3 = info2[index].plaPM != "―" ? '３：'+info2[index].plaPM : '';
+							pla_str =  $pla1 + $pla2 + $pla3; 
 							tooltip2[4].style("font-size", fontSize)
 										.style("left", (centerX)+"px")
 										.style("top", "352px")
-										.text("容包プラ：" + pla_str)
-							//古紙衣類
+										.text("会館住所：" + pla_str)
+							//会館連絡先
 							var paper_str = "";
-							if (info2[index].paperQ != ""){
-								paper_str = info2[index].paperQ + "（要問合せ）";
-							} else if (info2[index].paperAM != ""){
-								paper_str = info2[index].paperAM + "（午前）";
-							} else if (info2[index].paperPM != ""){
-								paper_str = info2[index].paperPM + "（午後）";
-							} else if (info2[index].paperCOM != ""){
-								paper_str = "ｺﾐｭﾆﾃｨ回収 " + info2[index].paperCOM;
-							}
+							var $paper1 = info2[index].paperQ  != "―" ? '１：'+info2[index].paperQ  : '';
+							var $paper2 = info2[index].paperAM != "―" ? '２：'+info2[index].paperAM : '';
+							var $paper3 = info2[index].paperPM != "―" ? '３：'+info2[index].paperPM : '';
+							paper_str =  $paper1 + $paper2 + $paper3; 
 							tooltip2[5].style("font-size", fontSize)
 										.style("left", (centerX)+"px")
 										.style("top", "384px")
-										.text("古紙衣類：" + paper_str)
-							//ペットボトル　コミュニティ回収
-							//データが存在する場合のみ、表示するため他と異なりpet_strに"ペットボトル："を含んでいることに注意
+										.text("会館連絡先：" + paper_str)
+							//お知らせ
 							var pet_str = "";
-							if (info2[index].petCOM != ""){
-								pet_str = "ペットボトル：ｺﾐｭﾆﾃｨ回収 " + info2[index].petCOM;
+							if (info2[index].paperCOM != ""){
+								pet_str = "お知らせ：" + info2[index].paperCOM;
 							}
 							tooltip2[6].style("font-size", fontSize)
 										   .style("left", (centerX)+"px")
@@ -919,7 +900,8 @@
 										})
 							//infodindow2を表示
 							//infowindow2のwidthを計算
-							var window_width = 300 < banchi_and_gaiku.length*18 ? banchi_and_gaiku.length*18+30 : 300;
+							//var window_width = 300 < banchi_and_gaiku.length*18 ? banchi_and_gaiku.length*18+30 : 300;
+							var window_width = window.innerWidth*0.7-80;
 							infowindow2.style("left", (centerX-20)+"px")
 									   .style("width", window_width+"px")
 									   .style("opacity", "1");
