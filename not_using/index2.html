@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+  <html lang="ja">
+  <meta http-equiv="content-language" content="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,user-scalable=yes">
+	<title>大阪市ごみ収集マップ</title>
+	<!--d3.js v6を採用しようとしたが、IE11はv4しか対応していない-->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <style>
+		html, body, div, span, applet, object, iframe, h1, h2, h4, h5, h6, p, blockquote, pre, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, input, textarea, legend, article, aside, footer, header, hgroup, menu, nav, section {
+			border: 0;
+			color: #000;
+			font-size: 100%;
+			font: inherit;
+			margin: 0;
+			padding: 0;
+			vertical-align: baseline;
+		}
+		h1, h2, h3, h4, h5, h6 {
+			font-weight: bold;
+		}
+		h1 {
+			font-size: xx-large;
+		}
+		body { font-family: "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", Meiryo, Osaka, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif; }
+		h3 { text-align: left;}
+		h1,h2,p { padding: 5px; text-align: center; }
+		svg { background-color:#fff; }
+		path { fill:white; stroke:black; stroke-width:0.25;}
+		img { position:absolute; top:0px; left:0px; width:200px; height:64px; }
+		#department { position: absolute; bottom:0; left:0; z-index:9999; pointer-events: none; }
+		/*RESPONSIVE: スマートフォンなどウィンドウ幅600px以下*/
+		@media screen and (max-width:600px) {
+			/*iPhone5s１行におさめるには4.35vw*/
+			img { position:absolute; top:0px; left:0px; width:50px; height:16px; }
+			h1 { font-size: large; }
+			h1,h2,h3, p { padding: 0; text-align: center; }
+			#department { font-size:10px; position: fixed; bottom:0; left:0; z-index:9999; pointer-events: none; }
+		}
+    </style>
+	<script>
+	  function draw(){
+		  //とりあえず西区だけなので、いきなりスマホ判定させて遷移させる
+		  //スマホなら地図なしのほうへ遷移する
+		  if (navigator.userAgent.match(/iPhone|Android.+Mobile/)){
+				window.location.href="smartphone.html";
+			} else {
+			//PC
+				window.location.href="pc.html";
+			}
+		
+		/*
+		//変数初期化
+		var fontSize = "0.8rem";
+		//描画エリア設定
+		var width  = window.innerWidth;
+		var height = window.innerHeight;
+		//svg
+		var svg = d3.select('body').append('svg').attr('width', width).attr('height', height);
+		//後でCSV読み込んで区名を描画の際にd3.jsonのフォーカスを超えてprojectionを使うためグローバル変数としてここで宣言しておく
+		var projection;
+		//geojson読み込み
+		d3.json("ku.json", function(json){
+			//描画レスポンシブ対応　中心と移動も画面サイズで自動調整
+			projection = d3.geoMercator()
+			.fitExtent([[0, 0],[width, height-100]], json);
+			//path設定
+			var path = d3.geoPath(projection);
+			//24区境界　描画
+			svg.append("g").selectAll("path")
+			.data(json.features)
+			.enter()
+			.append("path")
+			.attr("d", path)
+			.style("fill", "#8eb8ff")
+			.attr("fill", function(d){
+				//これをしておかないと区名のテキストが下になって見えない
+					return "hsl(0,0%,80%)";
+			})
+			.attr("stroke","white")
+			.on('mouseover', function(d){
+					//赤く塗る
+					d3.select(this)
+					.style("fill", "#ffd1d1");
+			})
+			.on('mouseout', function(d){
+				//初期設定の色に戻す
+					d3.select(this)
+					.style("fill", "#8eb8ff");
+			})
+			.on('click', function(d) {
+					//ブラウザバックで戻ると一度タップした色が残っているので、ページ遷移の前に初期設定の色に戻す
+					d3.select(this)
+					.style("fill", "#8eb8ff");
+					//将来：d3.js v6ではeventがリスナの引数として必要になることに注意
+					//結局、IE11はd3.js v4しか動かないのでかなり先のこと
+					//次ページへパラメータ渡しつつ遷移
+					if(d.properties.N03_001!=""){
+						//スマホなら地図なしのほうへ遷移する
+						if (navigator.userAgent.match(/iPhone|Android.+Mobile/)){
+							window.location.href="kumap23.html?ku="+d.properties.N03_004+"&file="+d.properties.N03_001;
+						} else {
+							//PC
+							window.location.href="kumap22.html?ku="+d.properties.N03_004+"&file="+d.properties.N03_001;
+						}
+					}
+			});
+			//区名　描画
+			//projectionに食わせる際には緯度経度をまとめてxyとして食わせることに注意
+			//var lonlat = [element.lon, element.lat];
+			//var xy = projection(lonlat);
+			var lonlat;
+			var xy;
+			svg.append("g")
+			   .selectAll("text")
+			   .data(json.features)
+			   .enter()
+			   .append("text")
+			   .style("font-size", fontSize)
+			   .style("font-weight", "bold")
+			   .style("text-anchor", "middle")
+			   .style("pointer-events", "none")
+			   .attr("x", function(d){
+				   lonlat = [d.properties.center_lon, d.properties.center_lat];
+				   xy = projection(lonlat);
+				   return xy[0];
+				})
+				.attr("y", function(d){
+				   lonlat = [d.properties.center_lon, d.properties.center_lat];
+				   xy = projection(lonlat);
+				   return xy[1];
+				})
+				.text(function(d){
+					return d.properties.N03_004;
+				});
+		});
+		*/
+	  }
+	</script>
+  </head>
+  <body onload="draw()">
+	<a href="https://www.city.osaka.lg.jp/index.html"><img src="osakacity_logo.png" alt="大阪市 OSAKA CITY"></a>
+	<div class="header">
+		<h1>大阪市ごみ収集マップ</h1>
+		<p>お住まいの区を選択してください</p>
+		<a href="https://www.city.osaka.lg.jp/contents/wdu150/trashmap/text/index.html"><p>読み上げ版はこちら</p></a>
+	</div>
+	<div id="department">
+		<h2>このページの作成者・問合せ先</h2>
+		<h2>大阪市環境局事業部事業管理課</h2>
+		<h2>電話：０６−６６３０−３２２６</h2>
+	</div>
+	<!--大阪市HP CMSのトラックを設定　以下はごみ収集マップのコードなので使わないこと
+		 Sibulla tracking code start
+		<script type="text/javascript">
+			(function(){ var b = document.getElementsByTagName('script')[0],sib = document.createElement('script');
+			sib.type = 'text/javascript';sib.async = true;
+			sib.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'ma001.sibulla.com/dekatag/access?id=aGaskA6u';
+			b.parentNode.insertBefore(sib,b);}());
+		</script>
+		 Sibulla tracking code end
+	-->
+  </body>
+</html>
